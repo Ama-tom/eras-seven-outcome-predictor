@@ -495,23 +495,7 @@ Download the template first to ensure correct column names.
             if uploaded.name.endswith('.csv'):
                 df_batch = pd.read_csv(uploaded)
             else:
-                try:
-                    xl = pd.ExcelFile(uploaded)
-                    if 'Patient_Data' in xl.sheet_names:
-                        df_peek = pd.read_excel(uploaded, sheet_name='Patient_Data',
-                                                header=0, nrows=2)
-                        first_val = str(df_peek.iloc[0, 0]).strip()
-                        is_notes = any(x in first_val for x in ['Text','0=No','1-4','1-3','1-12'])
-                        if is_notes:
-                            df_batch = pd.read_excel(uploaded, sheet_name='Patient_Data',
-                                                     header=0, skiprows=[1])
-                        else:
-                            df_batch = pd.read_excel(uploaded, sheet_name='Patient_Data',
-                                                     header=0)
-                    else:
-                        df_batch = pd.read_excel(uploaded, header=0)
-                except Exception:
-                    df_batch = pd.read_excel(uploaded, header=0)
+                df_batch = pd.read_excel(uploaded, header=0)
             df_batch = df_batch.dropna(how='all')
             st.success(f'Loaded {len(df_batch)} patients from {uploaded.name}')
             st.dataframe(df_batch.head(5), use_container_width=True)
