@@ -92,18 +92,33 @@ st.set_page_config(
 
 MODELS_DATA = {
   "POCR_Toal": {
-    "ASA_physical_status": {"B_coeff": 1.0985, "weight": 10.98, "OR": 3.0, "p_value": 0.0},
-    "Thromboprophylaxis_initiated_preop": {"B_coeff": 0.7491, "weight": 7.49, "OR": 2.115, "p_value": 0.0017},
-    "Smoking_alcohol_cessation_Counselling": {"B_coeff": -0.4943, "weight": -4.94, "OR": 0.61, "p_value": 0.0021},
-    "Urgency": {"B_coeff": -0.4845, "weight": -4.84, "OR": 0.616, "p_value": 0.0027},
-    "Diabetic_Mellitus": {"B_coeff": 0.9286, "weight": 9.29, "OR": 2.531, "p_value": 0.0127},
-    "Surgical_Complexity": {"B_coeff": 0.2988, "weight": 2.99, "OR": 1.348, "p_value": 0.014},
-    "Regional_anesthesia_used_block_L": {"B_coeff": -0.3739, "weight": -3.74, "OR": 0.688, "p_value": 0.0272},
-    "Nutritional_risk_assessment_Preop": {"B_coeff": 0.3503, "weight": 3.5, "OR": 1.42, "p_value": 0.0295},
-    "Renal_Comorbidity": {"B_coeff": 1.6781, "weight": 16.78, "OR": 5.356, "p_value": 0.0408},
-    "Avoidance_of_sedative_premedicat": {"B_coeff": -0.3204, "weight": -3.2, "OR": 0.726, "p_value": 0.046},
-    "Goal_directed_restricted_fluid_t": {"B_coeff": -0.3108, "weight": -3.11, "OR": 0.733, "p_value": 0.0477},
-    "Urinary_catheter_use_optimized": {"B_coeff": -0.2904, "weight": -2.9, "OR": 0.748, "p_value": 0.0959}
+    "Renal_Comorbidity":                    {"B_coeff": 1.6781,  "weight": 16.78, "OR": 5.356, "p_value": 0.0},
+    "ASA_physical_status":                  {"B_coeff": 1.0985,  "weight": 10.99, "OR": 3.000, "p_value": 0.0},
+    "ERAS_PE_Adherence_rate":               {"B_coeff": -1.1451, "weight": -11.45,"OR": 0.318, "p_value": 0.0},
+    "Diabetic_Mellitus":                    {"B_coeff": 0.9286,  "weight": 9.29,  "OR": 2.531, "p_value": 0.0},
+    "Thromboprophylaxis_initiated_preop":   {"B_coeff": 0.7491,  "weight": 7.49,  "OR": 2.115, "p_value": 0.0},
+    "VTE_prophylaxis_continued_postop":     {"B_coeff": 0.5536,  "weight": 5.54,  "OR": 1.739, "p_value": 0.0},
+    "Nutritional_support_postop_if_ap":     {"B_coeff": 0.4454,  "weight": 4.45,  "OR": 1.561, "p_value": 0.0},
+    "Epidural_management_perprotocol_":     {"B_coeff": 0.3603,  "weight": 3.60,  "OR": 1.434, "p_value": 0.0},
+    "Nutritional_risk_assessment_Preop":    {"B_coeff": 0.3503,  "weight": 3.50,  "OR": 1.420, "p_value": 0.0},
+    "Patient_Satisfaction":                 {"B_coeff": 0.2912,  "weight": 2.91,  "OR": 1.338, "p_value": 0.0},
+    "Surgical_Complexity":                  {"B_coeff": 0.2988,  "weight": 2.99,  "OR": 1.348, "p_value": 0.0},
+    "Pain_Severity":                        {"B_coeff": 0.2585,  "weight": 2.59,  "OR": 1.295, "p_value": 0.0},
+    "Early_removal_of_surgical_drains":     {"B_coeff": -0.2392, "weight": -2.39, "OR": 0.787, "p_value": 0.0},
+    "Urinary_catheter_use_optimized":       {"B_coeff": -0.2900, "weight": -2.90, "OR": 0.748, "p_value": 0.0},
+    "Avoidance_of_sedative_premedicat":     {"B_coeff": -0.3204, "weight": -3.20, "OR": 0.726, "p_value": 0.0},
+    "Goal_directed_restricted_fluid_t":     {"B_coeff": -0.3107, "weight": -3.11, "OR": 0.733, "p_value": 0.0},
+    "Regional_anesthesia_used_block_L":     {"B_coeff": -0.3737, "weight": -3.74, "OR": 0.688, "p_value": 0.0},
+    "Early_Foley_catheter_removal":         {"B_coeff": -0.3662, "weight": -3.66, "OR": 0.693, "p_value": 0.0},
+    "Smoking_alcohol_cessation_Counselling":{"B_coeff": -0.4943, "weight": -4.94, "OR": 0.610, "p_value": 0.0},
+    "Urgency":                              {"B_coeff": -0.4845, "weight": -4.85, "OR": 0.616, "p_value": 0.0},
+    "Early_extubation_in_OR":              {"B_coeff": -0.4588, "weight": -4.59, "OR": 0.632, "p_value": 0.0},
+    "Nasogastric_tube_avoided_removed":     {"B_coeff": -0.5393, "weight": -5.39, "OR": 0.583, "p_value": 0.0},
+    "Postop_nausea_well_managed":           {"B_coeff": -0.6571, "weight": -6.57, "OR": 0.518, "p_value": 0.0},
+    "Early_oral_intake_resumed_POD_01":     {"B_coeff": -0.6312, "weight": -6.31, "OR": 0.532, "p_value": 0.0},
+    "IV_fluids_discontinued_early_by_":     {"B_coeff": -0.7970, "weight": -7.97, "OR": 0.451, "p_value": 0.0},
+    "Early_mobilization_within_24hrs":      {"B_coeff": -0.8240, "weight": -8.24, "OR": 0.439, "p_value": 0.0},
+    "First_Postop_moblization_time_hrs":    {"B_coeff": 0.0110,  "weight": 0.11,  "OR": 1.011, "p_value": 0.0},
   },
   "Total_LOHS_Binary": {
     "Thromboprophylaxis_initiated_preop": {"B_coeff": 1.0744, "weight": 10.74, "OR": 2.928, "p_value": 0.0},
@@ -173,7 +188,7 @@ MODELS_DATA = {
   }
 }
 
-MAX_SCORES = {"POCR_Toal": 51.03, "Total_LOHS_Binary": 68.08, "Postop_Adverse_4": 76.6, "SSI_Outcome": 112.56}
+MAX_SCORES = {"POCR_Toal": 70.74, "Total_LOHS_Binary": 68.08, "Postop_Adverse_4": 76.6, "SSI_Outcome": 112.56}
 
 LABELS = {
   "POCR_Toal": "30-Day Composite Complications",
