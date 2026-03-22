@@ -500,13 +500,31 @@ for tab, outcome_key in zip(tabs, outcome_keys):
         input_col, result_col = st.columns([1.1, 0.9], gap='large')
         with input_col:
             st.markdown(f'#### Patient Parameters - {label}')
-            st.caption(f'{len(model)} predictors selected (univariate p < 0.15). Enter 0 for absent/unknown.')
+            st.caption(f'{len(model)} predictors | Univariate p < 0.15 | Classified by domain')
             patient_vals = {}
             preds = list(model.keys())
+            from collections import defaultdict
+            grouped = defaultdict(list)
             for pred in preds:
-                info = model[pred]
-                col_a, col_b = st.columns([2, 1])
-                with col_a:
+                cat = PREDICTOR_META.get(pred, {}).get('category', 'Other')
+                grouped[cat].append(pred)
+            for cat in CATEGORY_ORDER:
+                if cat not in grouped:
+                    continue
+                st.markdown(
+                    f'<div style="margin:1rem 0 0.3rem;padding:0.4rem 0.8rem;'
+                    f'background:#1F4E79;color:white;border-radius:6px;'
+                    f'font-size:0.85rem;font-weight:600;">'
+                    + CATEGORY_ICONS.get(cat, cat) + '</div>',
+                    unsafe_allow_html=True)
+                if cat == 'ERAS - Preoperative':
+                    st.caption(ERAS_INSTRUCTION)
+                for pred in grouped[cat]:
+                    info = model[pred]
+                    smart_input(pred, info, outcome_key)
+            for pred in preds:
+                if PREDICTOR_META.get(pred, {}).get('category', 'Other') == 'Other':
+                    info = model[pred]
                     smart_input(pred, info, outcome_key)
             calc_btn = st.button('Calculate Risk', key=f'calc_{outcome_key}',
                                   type='primary', use_container_width=True)
