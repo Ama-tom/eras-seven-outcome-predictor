@@ -84,7 +84,7 @@ def results_to_excel(df_results):
 # ============================================================
 
 st.set_page_config(
-    page_title='ERAS Africa Risk Calculator',
+    page_title='ERAS Africa Risk Calculator | 7 Outcome Models',
     page_icon='Hospital',
     layout='wide',
     initial_sidebar_state='expanded'
@@ -185,6 +185,15 @@ MODELS_DATA = {
     "Urgency":                               {"B_coeff": -0.5062, "weight": -5.06, "OR": 0.603, "p_value": 0.0},
     "Abbreviated_fasting_protocol_2hrs":     {"B_coeff": -1.0006, "weight": -10.01,"OR": 0.368, "p_value": 0.0},
     "Multimodal_analgesia_intraop_opi":      {"B_coeff": -1.4949, "weight": -14.95,"OR": 0.224, "p_value": 0.0},
+  },
+  "Death_30_Mortality": {
+    "ASA_physical_status":               {"B_coeff": 0.0, "weight": 0.0, "OR": 1.0, "p_value": 1.0}
+  },
+  "Reoperation_30_Day": {
+    "ASA_physical_status":               {"B_coeff": 0.0, "weight": 0.0, "OR": 1.0, "p_value": 1.0}
+  },
+  "Readmission_30_day": {
+    "ASA_physical_status":               {"B_coeff": 0.0, "weight": 0.0, "OR": 1.0, "p_value": 1.0}
   }
 }
 
@@ -194,7 +203,10 @@ LABELS = {
   "POCR_Toal": "30-Day Composite Complications",
   "Total_LOHS_Binary": "Length of Hospital Stay",
   "Postop_Adverse_4": "Postoperative Adverse Outcome",
-  "SSI_Outcome": "Surgical Site Infection"
+  "SSI_Outcome": "Surgical Site Infection",
+  "Death_30_Mortality": "30-Day Mortality",
+  "Reoperation_30_Day": "30-Day Reoperation",
+  "Readmission_30_day": "30-Day Readmission"
 }
 
 SHAP_DATA = {
@@ -428,24 +440,40 @@ footer { visibility: hidden; }
 
 st.markdown("""<div class="hero">
     <h1>ERAS Africa Risk Calculator</h1>
-    <p>Three independent B-coefficient scoring models &nbsp;|&nbsp;
+    <p>Seven independent B-coefficient scoring models &nbsp;|&nbsp;
     30-Day Composite Complications &nbsp;|&nbsp;
-    Length of Stay &nbsp;|&nbsp; Postoperative Adverse Outcome<br>
-    TRIPOD+AI 2024 &nbsp;|&nbsp; CONSORT 2025 &nbsp;|&nbsp; Ethiopian Multicenter Cohort</p>
+    Length of Hospital Stay &nbsp;|&nbsp;
+    Postoperative Adverse Outcome &nbsp;|&nbsp;
+    Surgical Site Infection &nbsp;|&nbsp;
+    30-Day Mortality &nbsp;|&nbsp;
+    30-Day Reoperation &nbsp;|&nbsp;
+    30-Day Readmission<br>
+    TRIPOD+AI 2024 &nbsp;|&nbsp; CONSORT 2025 &nbsp;|&nbsp; SPIRIT 2025 &nbsp;|&nbsp;
+    Ethiopian Multicenter Cohort &nbsp;|&nbsp; 721 Patients &nbsp;|&nbsp; 7 Hospitals</p>
 </div>""", unsafe_allow_html=True)
 
 with st.sidebar:
     st.markdown('### About')
     st.markdown("""
-**Three independent models** built on univariate
-logistic regression (p < 0.15), B-coefficient x 10 scoring.
+**Seven independent models** built on univariate
+logistic regression (p < 0.15), B-coefficient x 10 scoring,
+with forward stepwise selection.
+
+**Outcomes modelled:**
+- 30-Day Composite Complications
+- Length of Hospital Stay
+- Postoperative Adverse Outcome
+- Surgical Site Infection
+- 30-Day Mortality
+- 30-Day Reoperation
+- 30-Day Readmission
 
 **Risk strata:**
 - Low: < 10%
 - Intermediate: 10 to 30%
 - High: > 30%
 
-**Source:** Multicenter Ethiopian tertiary hospitals
+**Source:** 721 patients across 7 Ethiopian tertiary hospitals
 
 **Standards:** TRIPOD+AI 2024 | CONSORT 2025 | SPIRIT 2025
     """)
@@ -760,4 +788,4 @@ Download the template first to ensure correct column names.
             st.info('Make sure you used the correct template and did not rename any columns.')
 
 st.markdown('---')
-st.caption('ERAS Africa Risk Calculator | B-coefficient scoring | TRIPOD+AI 2024 | CONSORT 2025 | github.com/Ama-tom/eras-africa-risk-pwa')
+st.caption('ERAS Africa Risk Calculator | 7 outcome models | B-coefficient scoring | TRIPOD+AI 2024 | CONSORT 2025 | SPIRIT 2025 | 721 patients | 7 Ethiopian hospitals | github.com/Ama-tom/eras-africa-risk-pwa')
