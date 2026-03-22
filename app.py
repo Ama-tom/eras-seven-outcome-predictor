@@ -452,14 +452,6 @@ logistic regression (p < 0.15), B-coefficient x 10 scoring.
     st.markdown('---')
     st.markdown('**Disclaimer:** For clinical decision support only. Always apply clinical judgment.')
 
-CATEGORICAL_VARS = {
-    'ASA_physical_status':  [1, 2, 3, 4],
-    'Age_Catagory':         [1, 2, 3, 4],
-    'Surgical_Complexity':  [1, 2, 3],
-    'Surgical_Speciality':  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    'Admission_Type':       [1, 2, 3],
-}
-
 SURGICAL_SPECIALITY_LABELS = {
     1: '1 - Breast and Endocrine', 2: '2 - Cardiothoracic',
     3: '3 - Colorectal', 4: '4 - General Surgery',
@@ -469,19 +461,89 @@ SURGICAL_SPECIALITY_LABELS = {
     11: '11 - Upper GI', 12: '12 - Vascular Surgery',
 }
 
+PREDICTOR_META = {
+    'Literacy ':                             {'category': 'Sociodemographic',     'question': "What is the patient's literacy level?",                                                                             'type': 'radio',  'options': [0,1], 'labels': {0:'No formal / Primary education', 1:'Secondary / Tertiary education'}},
+    'ASA_physical_status':                   {'category': 'Clinical',             'question': 'What is the ASA Physical Status classification?',                                                                   'type': 'select', 'options': [1,2,3,4], 'labels': {1:'ASA I', 2:'ASA II', 3:'ASA III', 4:'ASA IV'}},
+    'Diabetic_Mellitus':                     {'category': 'Clinical',             'question': 'Does the patient have a diagnosis of Diabetes Mellitus?',                                                           'type': 'yesno'},
+    'Renal_Comorbidity':                     {'category': 'Clinical',             'question': 'Does the patient have renal comorbidity (CKD, AKI, or GFR <60)?',                                                  'type': 'yesno'},
+    'Neurological_comorbidity':              {'category': 'Clinical',             'question': 'Does the patient have a neurological comorbidity?',                                                                  'type': 'yesno'},
+    'Comorbidity':                           {'category': 'Clinical',             'question': 'Does the patient have any comorbidity?',                                                                             'type': 'yesno'},
+    'Multi_Comorbidity':                     {'category': 'Clinical',             'question': 'Does the patient have multiple comorbidities (2 or more)?',                                                         'type': 'yesno'},
+    'Obesity_BMI_30':                        {'category': 'Clinical',             'question': 'Does the patient have obesity (BMI >= 30 kg/m2)?',                                                                  'type': 'yesno'},
+    'Surgical_Complexity':                   {'category': 'Surgical',             'question': 'What is the surgical complexity?',                                                                                   'type': 'select', 'options': [1,2,3], 'labels': {1:'Intermediate Surgery', 2:'Major Surgery', 3:'Major Complex Surgery'}},
+    'Surgical_Speciality':                   {'category': 'Surgical',             'question': 'What is the surgical specialty?',                                                                                    'type': 'select', 'options': [1,2,3,4,5,6,7,8,9,10,11,12], 'labels': SURGICAL_SPECIALITY_LABELS},
+    'Urgency':                               {'category': 'Surgical',             'question': 'What is the urgency of the surgical procedure?',                                                                    'type': 'radio',  'options': [0,1], 'labels': {0:'Elective', 1:'Emergency / Urgent'}},
+    'Admission_Type':                        {'category': 'Surgical',             'question': 'What is the type of patient admission?',                                                                            'type': 'select', 'options': [1,2,3], 'labels': {1:'Elective Inpatient', 2:'Emergency', 3:'Urgent'}},
+    'Minimally_invasive_approach_used':      {'category': 'Surgical',             'question': '13. Was a minimally invasive surgical approach used (laparoscopic or robotic)?',                                   'type': 'yesno'},
+    'Time_from_antibiotic_administration_to_Incision': {'category': 'Surgical',  'question': '8.  Was antibiotic prophylaxis administered within 60 minutes before incision?',                                   'type': 'yesno'},
+    'Preoperative_education_counselin':      {'category': 'ERAS - Preoperative',  'question': '1.  Was preoperative education and counseling provided to the patient and family?',                                 'type': 'yesno'},
+    'Medical_risk_optimization':             {'category': 'ERAS - Preoperative',  'question': '2.  Was medical risk optimization performed prior to surgery?',                                                     'type': 'yesno'},
+    'Nutritional_risk_assessment_Preop':     {'category': 'ERAS - Preoperative',  'question': '3.  Was a nutritional risk assessment conducted, with appropriate intervention if indicated?',                     'type': 'yesno'},
+    'Abbreviated_fasting_protocol_2hrs':     {'category': 'ERAS - Preoperative',  'question': '4.  Was an abbreviated fasting protocol followed (clear fluids allowed up to 2 hours preoperatively)?',           'type': 'yesno'},
+    'Carbohydrate_loading_given_preop':      {'category': 'ERAS - Preoperative',  'question': '5.  Was preoperative carbohydrate loading administered?',                                                          'type': 'yesno'},
+    'Avoidance_ofmechanicalbowelprep':       {'category': 'ERAS - Preoperative',  'question': '6.  Was mechanical bowel preparation avoided (for gastrointestinal procedures only)?',                             'type': 'yesno'},
+    'Thromboprophylaxis_initiated_preop':    {'category': 'ERAS - Preoperative',  'question': '7.  Was thromboprophylaxis initiated preoperatively?',                                                             'type': 'yesno'},
+    'Preemptive_analgesia_given_acet_Diclo': {'category': 'ERAS - Preoperative',  'question': '9.  Was pre-emptive analgesia (e.g., acetaminophen or diclofenac) administered preoperatively?',                  'type': 'yesno'},
+    'Smoking_alcohol_cessation_Counselling': {'category': 'ERAS - Preoperative',  'question': '10. Was smoking and/or alcohol cessation advised and supported preoperatively?',                                    'type': 'yesno'},
+    'Prehabilitation_exercise_program':      {'category': 'ERAS - Preoperative',  'question': '11. Was a prehabilitation or structured exercise program implemented preoperatively?',                             'type': 'yesno'},
+    'Avoidance_of_sedative_premedicat':      {'category': 'ERAS - Preoperative',  'question': '12. Was sedative premedication avoided?',                                                                          'type': 'yesno'},
+    'Regional_anesthesia_used_block_L':      {'category': 'ERAS - Intraoperative','question': '14. Was regional anesthesia utilized (nerve block, epidural, or local anesthetic infiltration)?',                 'type': 'yesno'},
+    'Multimodal_analgesia_intraop_opi':      {'category': 'ERAS - Intraoperative','question': '16. Was multimodal, opioid-sparing analgesia administered intraoperatively?',                                     'type': 'yesno'},
+    'Antiemetic_prophylaxis_given':          {'category': 'ERAS - Intraoperative','question': '17. Was antiemetic prophylaxis provided intraoperatively?',                                                        'type': 'yesno'},
+    'Normothermia_maintained_actively':      {'category': 'ERAS - Intraoperative','question': '18. Was active maintenance of normothermia ensured throughout the procedure?',                                     'type': 'yesno'},
+    'Goal_directed_restricted_fluid_t':      {'category': 'ERAS - Intraoperative','question': '19. Was goal-directed or restricted fluid therapy applied intraoperatively?',                                      'type': 'yesno'},
+    'Surgical_drains_avoided_or_used_':      {'category': 'ERAS - Intraoperative','question': '21. Were surgical drains avoided or used only selectively?',                                                       'type': 'yesno'},
+    'Urinary_catheter_use_optimized':        {'category': 'ERAS - Intraoperative','question': '22. Was urinary catheter use optimized and limited to clinical indication?',                                       'type': 'yesno'},
+    'Epidural_management_perprotocol_':      {'category': 'ERAS - Intraoperative','question': '28. Was epidural management followed according to protocol (if an epidural was placed)?',                          'type': 'yesno'},
+    'Nutritional_support_postop_if_ap':      {'category': 'ERAS - Postoperative', 'question': '33. Was appropriate nutritional support provided postoperatively (if indicated)?',                                 'type': 'yesno'},
+    'Multimodal_analgesia_postop_opio':      {'category': 'ERAS - Postoperative', 'question': '27. Was multimodal, non-opioid analgesia used postoperatively?',                                                  'type': 'yesno'},
+}
+
+CATEGORY_ORDER = [
+    'Sociodemographic', 'Clinical', 'Surgical',
+    'ERAS - Preoperative', 'ERAS - Intraoperative', 'ERAS - Postoperative',
+]
+
+CATEGORY_ICONS = {
+    'Sociodemographic':      '👤 Sociodemographic Data',
+    'Clinical':              '🏥 Clinical Factors',
+    'Surgical':              '🔪 Surgical Factors',
+    'ERAS - Preoperative':   '📋 ERAS Preoperative Components (Items 1-12)',
+    'ERAS - Intraoperative': '🫀 ERAS Intraoperative Components (Items 13-22)',
+    'ERAS - Postoperative':  '🛏 ERAS Postoperative Components (Items 23-34)',
+}
+
+ERAS_INSTRUCTION = (
+    'Was each of the following Enhanced Recovery After Surgery (ERAS) protocol elements '
+    'fully implemented and documented for this patient, according to the established guidelines?'
+)
+
 def smart_input(pred, info, outcome_key):
+    meta      = PREDICTOR_META.get(pred, {})
     direction = 'increases risk' if info['weight'] > 0 else 'decreases risk'
     help_text = f'OR={info["OR"]:.3f} | {direction} | p={info["p_value"]:.4f}'
-    label_clean = pred.replace('_', ' ')
-    if pred in CATEGORICAL_VARS:
-        options = CATEGORICAL_VARS[pred]
-        fmt_fn = (lambda x: SURGICAL_SPECIALITY_LABELS.get(x, str(x))) if pred == 'Surgical_Speciality' else (lambda x: str(x))
-        return float(st.selectbox(label=label_clean, options=options, index=0,
-                                   key=f'{outcome_key}_{pred}', help=help_text, format_func=fmt_fn))
+    question  = meta.get('question', pred.replace('_', ' '))
+    itype     = meta.get('type', 'yesno')
+    if itype == 'select':
+        options = meta.get('options', [1, 2, 3])
+        lbl_map = meta.get('labels', {})
+        return float(st.selectbox(label=question, options=options, index=0,
+                                   key=f'{outcome_key}_{pred}', help=help_text,
+                                   format_func=lambda x: lbl_map.get(x, str(x))))
+    elif itype == 'number':
+        return float(st.number_input(label=question, min_value=0, max_value=120, value=40,
+                                      key=f'{outcome_key}_{pred}', help=help_text))
+    elif itype == 'radio':
+        lbl_map = meta.get('labels', {0: 'No', 1: 'Yes'})
+        options = meta.get('options', [0, 1])
+        return float(st.radio(label=question, options=options, index=0, horizontal=True,
+                               key=f'{outcome_key}_{pred}', help=help_text,
+                               format_func=lambda x: lbl_map.get(x, str(x))))
     else:
-        return float(st.radio(label=label_clean, options=[0, 1], index=0, horizontal=True,
+        return float(st.radio(label=question, options=[0, 1], index=0, horizontal=True,
                                key=f'{outcome_key}_{pred}', help=help_text,
                                format_func=lambda x: 'No' if x == 0 else 'Yes'))
+
 
 outcome_keys = list(MODELS_DATA.keys())
 if not outcome_keys:
