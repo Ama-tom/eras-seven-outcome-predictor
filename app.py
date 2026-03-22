@@ -148,9 +148,7 @@ MODELS_DATA = {
     "Urinary_catheter_use_optimized": {"B_coeff": 0.3497, "weight": 3.5, "OR": 1.419, "p_value": 0.0407},
     "Avoidance_of_sedative_premedicat": {"B_coeff": 0.2586, "weight": 2.59, "OR": 1.295, "p_value": 0.0987},
     "Normothermia_maintained_actively": {"B_coeff": 0.2391, "weight": 2.39, "OR": 1.27, "p_value": 0.1155}
-  }
-}
-
+  },
   "SSI_Outcome": {
     "Preemptive_analgesia_given_acet_Diclo": {"B_coeff": 1.248,   "weight": 12.48, "OR": 3.483, "p_value": 0.0},
     "Obesity_BMI_30":                        {"B_coeff": 1.2179,  "weight": 12.18, "OR": 3.380, "p_value": 0.0},
