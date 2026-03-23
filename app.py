@@ -607,6 +607,24 @@ with forward stepwise selection.
     """)
     st.markdown('---')
     st.markdown('**Disclaimer:** For clinical decision support only. Always apply clinical judgment.')
+    st.markdown('---')
+    st.markdown('''**Principal Investigator**
+Amare Hailekiros Gebregzi
+
+**Institutions**
+Leiden University Medical Center, Netherlands
+Ethiopian Association of Anesthetists
+University of Gondar, Ethiopia
+
+**Contact**
+a.hailekiros_gebregzi@lumc.nl
+
+**Citation & IP Notice**
+This tool is based on unpublished research (2026).
+Do not reproduce, redistribute, or publish the
+models or findings without written permission
+from the principal investigator.
+    ''')
 
 SURGICAL_SPECIALITY_LABELS = {
     1: '1 - Breast and Endocrine', 2: '2 - Cardiothoracic',
