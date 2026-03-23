@@ -278,6 +278,16 @@ SHAP_DATA = {
   }
 }
 
+AUC_DATA = {
+    'POCR_Toal':          {'auc': 0.935, 'ci': '0.914-0.955'},
+    'Total_LOHS_Binary':  {'auc': 0.911, 'ci': '0.887-0.932'},
+    'Postop_Adverse_4':   {'auc': 0.918, 'ci': '0.897-0.938'},
+    'SSI_Outcome':        {'auc': 0.918, 'ci': '0.893-0.941'},
+    'Death_30_Mortality': {'auc': 1.000, 'ci': '1.000-1.000'},
+    'Reoperation_30_Day': {'auc': 0.996, 'ci': '0.991-1.000'},
+    'Readmission_30_day': {'auc': 0.827, 'ci': '0.789-0.863'},
+}
+
 LOW_MAX     = 10
 MID_MAX     = 30
 GITHUB_USER = 'Ama-tom'
@@ -552,6 +562,7 @@ st.markdown("""<div class="hero">
     30-Day Mortality &nbsp;|&nbsp;
     30-Day Reoperation &nbsp;|&nbsp;
     30-Day Readmission<br>
+    AUC range 0.827&ndash;1.000 &nbsp;|&nbsp;
     TRIPOD+AI 2024 &nbsp;|&nbsp; CONSORT 2025 &nbsp;|&nbsp; SPIRIT 2025 &nbsp;|&nbsp;
     Ethiopian Multicenter Cohort &nbsp;|&nbsp; 721 Patients &nbsp;|&nbsp; 7 Hospitals</p>
 </div>""", unsafe_allow_html=True)
@@ -580,6 +591,17 @@ with forward stepwise selection.
 **Source:** 721 patients across 7 Ethiopian tertiary hospitals
 
 **Standards:** TRIPOD+AI 2024 | CONSORT 2025 | SPIRIT 2025
+
+**Model Performance (AUC):**
+| Outcome | AUC | 95% CI |
+|---|---|---|
+| 30-Day Complications | 0.935 | 0.914-0.955 |
+| Length of Stay | 0.911 | 0.887-0.932 |
+| Adverse Outcome | 0.918 | 0.897-0.938 |
+| Surgical Site Infection | 0.918 | 0.893-0.941 |
+| 30-Day Mortality | 1.000 | 1.000-1.000 |
+| 30-Day Reoperation | 0.996 | 0.991-1.000 |
+| 30-Day Readmission | 0.827 | 0.789-0.863 |
     """)
     st.markdown('---')
     st.markdown('**Disclaimer:** For clinical decision support only. Always apply clinical judgment.')
@@ -774,6 +796,30 @@ for tab, outcome_key in zip(tabs, outcome_keys):
                 with m3:
                     above = risk_pct - MID_MAX if risk_class == 'HIGH' else (risk_pct - LOW_MAX if risk_class == 'INTERMEDIATE' else 0)
                     st.metric('Above threshold', f'{max(0,above):.1f}pp')
+                auc_info = AUC_DATA.get(outcome_key, {})
+                if auc_info:
+                    auc_val = auc_info['auc']
+                    auc_ci  = auc_info['ci']
+                    auc_col = ('#1a7348' if auc_val >= 0.80
+                               else '#b45309' if auc_val >= 0.70
+                               else '#c8102e')
+                    auc_lbl = ('Excellent' if auc_val >= 0.80
+                               else 'Good' if auc_val >= 0.70
+                               else 'Fair')
+                    st.markdown(
+                        f'<div style="margin:0.6rem 0;padding:0.5rem 0.8rem;'
+                        f'background:#f8fafc;border-radius:8px;'
+                        f'border-left:4px solid {auc_col};">'
+                        f'<span style="font-size:0.8rem;color:#6b7280;">'
+                        f'Model Discrimination (AUC)</span><br>'
+                        f'<span style="font-size:1.4rem;font-weight:700;'
+                        f'font-family:monospace;color:{auc_col};">{auc_val:.3f}</span>'
+                        f'<span style="font-size:0.8rem;color:#6b7280;margin-left:0.5rem;">'
+                        f'95% CI {auc_ci}</span>'
+                        f'<span style="float:right;font-size:0.8rem;font-weight:600;'
+                        f'color:{auc_col};">{auc_lbl}</span>'
+                        f'</div>',
+                        unsafe_allow_html=True)
                 st.markdown('---')
                 st.markdown(f'#### ERAS Bundle - {rec["label"]}')
                 for phase, phase_label in [('preop','Pre-operative'),('intraop','Intraoperative'),('postop','Post-operative')]:
@@ -813,6 +859,24 @@ for tab, outcome_key in zip(tabs, outcome_keys):
                         st.caption('Mean |SHAP value| - red = increases risk, green = decreases risk')
             else:
                 st.info('Enter patient values and click Calculate Risk to see results')
+                auc_info = AUC_DATA.get(outcome_key, {})
+                if auc_info:
+                    auc_val = auc_info['auc']
+                    auc_ci  = auc_info['ci']
+                    auc_col = '#1a7348' if auc_val >= 0.80 else '#b45309' if auc_val >= 0.70 else '#c8102e'
+                    auc_lbl = 'Excellent' if auc_val >= 0.80 else 'Good' if auc_val >= 0.70 else 'Fair'
+                    st.markdown(
+                        f'<div style="margin:0.4rem 0;padding:0.5rem 0.8rem;'
+                        f'background:#f8fafc;border-radius:8px;'
+                        f'border-left:4px solid {auc_col};">'
+                        f'<span style="font-size:0.75rem;color:#6b7280;">Model AUC</span>'
+                        f'&nbsp;&nbsp;<strong style="font-family:monospace;color:{auc_col};'
+                        f'font-size:1.1rem;">{auc_val:.3f}</strong>'
+                        f'<span style="font-size:0.75rem;color:#6b7280;"> (95% CI {auc_ci})</span>'
+                        f'&nbsp;&nbsp;<span style="font-size:0.75rem;font-weight:600;'
+                        f'color:{auc_col};">{auc_lbl}</span>'
+                        f'</div>',
+                        unsafe_allow_html=True)
                 st.markdown('**Risk thresholds:**')
                 for cls, pct_range, col in [
                         ('LOW', f'< {LOW_MAX}%', '#1a7348'),
